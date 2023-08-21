@@ -1,0 +1,46 @@
+ -------* nmos characteristics
+
+* include the model files
+.include ./tsmc_copy.txt
+  
+* netlist
+* m_instance_name drain_node gate_node source_node bulk_substrate_node model_name L=length W=width
+*m1 vdd in vss 0 cmosn l=10u w=0.5u 
+m1 vdd in 0 0 cmosn l=10u w=0.5u 
+
+* power sources excitation etc.
+* v_instance_name posive_node negetive_node value
+v_dd vdd 0 3.3 
+*v_0 vss 0 0
+v_in in 0 3.3 
+
+*Vname N1 N2 PULSE(V_initial V_final T_initial_Delay T_rise T_fall PulseWidth_onperiod Period_total)
+*v_in in 0 pulse(0 3.3 0 0.1p 0.1p 50n 100n)
+
+
+*Vname N1 N2 PWL(T1 V1 T2 V2 T3 V3 ...)   piecewise linear source
+*v_in in 0 pwl(0 0 50n 3.3 100n 0 150n 3.3 200n 0)
+
+
+*expected responses
+*.DC SRCname1 START STOP STEP SRCname2 START STOP STEP
+*.dc v_in 0 3.3  0.1
+
+.control
+*dc v_in 0 3.3 0.1 v_dd 0 3.3 1
+*run
+*setplot dc1
+*plot -v_dd#branch
+
+dc v_dd 0 3.3 .1 v_in 0 3.3  .1
+run
+setplot dc2
+plot -v_dd#branch
+
+*tran Tstep Tstop [ Tstart [ Tmax ] ] [ uic ]
+*tran 0.1n 200n
+*run
+*plot -v_dd#branch
+.endc
+
+.end

@@ -1,0 +1,46 @@
+* NMOS Capacitive Load Inverter-3.19854e-07
+
+.include ./t14y_tsmc_025_level3.txt
+
+m1 vout vin vs 0 cmosn l=0.5u w=10u
+r1 vdd vout 100k
+c1 ctop 0 0.1u
+
+v_dd vdd 0 5
+v_in vin 0 PULSE(0 5 0 0 2 10 20)
+v_c vout ctop 0
+v_s vs 0 0
+
+.control
+	tran 0.1 40
+	setplot tran1
+	plot vout, vin
+	plot -v_dd#branch
+	plot -v_c#branch
+	plot v_s#branch
+
+	meas tran Vmax MAX vout from=0.1 to=40
+	meas tran Vmin MIN vout from=0.1 to=40
+
+	let v10 = Vmin + 0.1*(Vmax - Vmin)
+	let v50 = Vmin + 0.5*(Vmax - Vmin)
+	let v90 = Vmin + 0.9*(Vmax - Vmin)
+
+	print v10, v50, v90
+
+	meas tran trise trig vout val=v10 rise=1 targ vout val=v90 rise=1
+	print trise
+	meas tran tfall trig vout val=v90 fall=1 targ vout val=v10 fall=1
+	print tfall
+
+	meas tran tphl trig vin val=2.5 rise=1 targ vout val=v50 fall=1
+        meas tran tplh trig vin val=2.5 fall=1 targ vout val=v50 rise=1
+        print tphl
+        print tplh
+        let tp = (tphl+tplh)/2
+	print tp
+
+	plot 5*(-v_dd#branch)
+.endc
+
+.end

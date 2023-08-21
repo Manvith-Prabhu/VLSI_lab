@@ -1,0 +1,35 @@
+*
+* NMOS characteristics - varying temperature works fine.
+*
+
+m0 drain gate 0 0 nfet w=6.4u l=1.8u ad=6.84p pd=10.8u as=6.84p ps=10.8u
+
+
+*
+.MODEL nfet nmos LEVEL=1 
+*
+
+* supply voltages
+Vdd drain 0 dc 5
+Vgg gate 0 dc 5
+
+*
+* analysis request
+*.dc vgg 0 25 0.1 vdd 0 8 2
+.dc vdd 0 10 0.1 vgg 0 8 2
+
+.control
+run
+setplot dc1
+plot -vdd#branch
+set temp=50
+run
+setplot dc2
+plot -vdd#branch
+set temp=200
+run
+setplot dc3
+plot -vdd#branch
+set temp=500
+.endc
+.end

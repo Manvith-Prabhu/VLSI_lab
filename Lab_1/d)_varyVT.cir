@@ -1,0 +1,43 @@
+*nmos characteristics - varying_vto.spice  working fine
+*
+
+
+m0 drain0 gate 0 0 nfet1 w=6.4u l=1.8u ad=6.84p pd=10.8u as=6.84p ps=10.8u
+m1 drain1 gate 0 0 nfet2 w=6.4u l=1.8u ad=6.84p pd=10.8u as=6.84p ps=10.8u
+m2 drain2 gate 0 0 nfet3 w=6.4u l=1.8u ad=6.84p pd=10.8u as=6.84p ps=10.8u
+R0 dd drain0 0.0001
+R1 dd drain1 0.0001
+R2 dd drain2 0.0001
+
+
+*
+.MODEL nfet1 NMOS LEVEL=1 VTO=0.5
+.MODEL nfet2 NMOS LEVEL=1 VTO=1.0
+.MODEL nfet3 NMOS LEVEL=1 VTO=1.5
+*
+
+* supply voltages
+Vdd dd 0 dc 5
+Vgg gate 0 dc 5
+
+
+*
+* analysis request
+.dc vgg 0 5 0.1 vdd 0 5 1
+.dc vdd 0 5 0.1 vgg 0 5 1
+.control
+run
+setplot dc1
+plot (v(dd)-v(drain0))/0.0001
+plot (v(dd)-v(drain1))/0.0001
+plot (v(dd)-v(drain2))/0.0001
+*plot (v(dd)-v(drain0))/0.0001 (v(dd)-v(drain1))/0.0001 (v(dd)-v(drain2))/0.0001
+setplot dc2
+plot (v(dd)-v(drain0))/0.0001
+plot (v(dd)-v(drain1))/0.0001
+plot (v(dd)-v(drain2))/0.0001
+.endc
+
+.end
+ 
+ 
