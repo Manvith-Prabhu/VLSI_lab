@@ -1,43 +1,30 @@
-*nmos characteristics - varying_vto.spice  working fine
-*
+* nmos characteristics with varying VBB
 
 
-m0 drain0 gate 0 0 nfet1 w=6.4u l=1.8u ad=6.84p pd=10.8u as=6.84p ps=10.8u
-m1 drain1 gate 0 0 nfet2 w=6.4u l=1.8u ad=6.84p pd=10.8u as=6.84p ps=10.8u
-m2 drain2 gate 0 0 nfet3 w=6.4u l=1.8u ad=6.84p pd=10.8u as=6.84p ps=10.8u
-R0 dd drain0 0.0001
-R1 dd drain1 0.0001
-R2 dd drain2 0.0001
+.include /media/manvithprabhu/Data/Programs/SPICE/t14y_tsmc_025_level3.txt
+  
+m1 drain gate source bulk cmosn l=1u w=0.5u 
 
+vdd drain 0 3.3
+vin gate 0 3.3
+vss source 0 0
+vbb bulk 0 3.3
 
-*
-.MODEL nfet1 NMOS LEVEL=1 VSB=0
-.MODEL nfet2 NMOS LEVEL=1 VSB=0.5
-.MODEL nfet3 NMOS LEVEL=1 VSB=1
-*
+.dc vin 0 3.3 0.1
 
-* supply voltages
-Vdd dd 0 dc 5
-Vgg gate 0 dc 5
-
-
-*
-* analysis request
-.dc vgg 0 5 0.1 vdd 0 5 1
-.dc vdd 0 5 0.1 vgg 0 5 1
 .control
+foreach vb -2 -1 0 1 2
+alter vbb=$vb
 run
-setplot dc1
-plot (v(dd)-v(drain0))/0.0001
-plot (v(dd)-v(drain1))/0.0001
-plot (v(dd)-v(drain2))/0.0001
-*plot (v(dd)-v(drain0))/0.0001 (v(dd)-v(drain1))/0.0001 (v(dd)-v(drain2))/0.0001
-setplot dc2
-plot (v(dd)-v(drain0))/0.0001
-plot (v(dd)-v(drain1))/0.0001
-plot (v(dd)-v(drain2))/0.0001
+end
+.endc
+
+.control
+foreach iter1 1 2 3 4 5
+setplot dc$iter1
+plot (-vdd#branch)  (-vbb#branch)
+end
 .endc
 
 .end
- 
  
