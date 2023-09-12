@@ -3,7 +3,7 @@
 .include ./t14y_tsmc_025_level3.txt
 
 m1 vout vin 0 0 cmosn l=0.5u w=10u
-r1 vdd vout 10000
+r1 vdd vout 100000
 
 v_dd vdd 0 5
 v_in vin 0 PULSE(0 5 0 0.0001n 0.0001n 10m 20m)

@@ -1,7 +1,7 @@
 * inverter with discrete resistor load; load mosfet width being changed.
 
-m0 out in vss 0 nfet w=6.4u l=1.8u ad=6.84p pd=10.8u as=6.84p ps=10.8u
-r0 vdd out 1k
+m0 out in vss 0 cmosn w=6.4u l=1.8u 
+r0 vdd out 10k
 
 .include ./t14y_tsmc_025_level3.txt
 
@@ -12,36 +12,15 @@ Vdd Vdd 0 dc 5
 * input voltage source:
 Vin in 0 dc 2.5 pulse(0 5 0 0.1n 0.1n 2n 4n)
 
-* analysis request
-*.dc vin 0 5 0.004
-
-
-* computing the response for various widths
-*.control
-*foreach res 100 1k 100k
-*alter r0 = $res
-*run
-*end
-*.endc
-
-* plotting the output for various widths
-*.control
-*foreach iter 1 2 3
-*setplot dc$iter
-*plot in out
-
-
-*end
-*.endc
 
 .control
 	tran 0.01n 20n
 	meas tran vmax MAX out from=0n to 1n
 	meas tran vmin MIN out from=2n to 3n
 
-	let v_10 vmin+ 0.1*(vmax-vmin)
-	let v_90 vmin+ 0.9*(vmax-vmin)
-l	et v_50 vmin+ 0.5*(vmax-vmin)
+	let v_10 vmin+0.1*(vmax-vmin)
+	let v_90 vmin+0.9*(vmax-vmin)
+	let v_50 vmin+0.5*(vmax-vmin)
 
 	meas tran trise trig vout val=v10 rise=1 targ vout val=v90 rise=1
 	print trise
@@ -55,7 +34,8 @@ l	et v_50 vmin+ 0.5*(vmax-vmin)
         let tp = (tphl+tplh)/2
 	print tp
 
+
 	plot 5*(-v_dd#branch)
 
-
+.endc
 .end

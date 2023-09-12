@@ -3,11 +3,11 @@
 .include ./t14y_tsmc_025_level3.txt
 
 m1 vout vin vs 0 cmosn l=0.5u w=10u
-r1 vdd vout 100k
-c1 ctop 0 0.1u
+r1 vdd vout 10k
+c1 ctop 0 1000n
 
 v_dd vdd 0 5
-v_in vin 0 PULSE(0 5 0 0 2 10 20)
+v_in vin 0 PULSE(0 5 0.1n 0.1n 0.1n 2n 4n)
 v_c vout ctop 0
 v_s vs 0 0
 
@@ -19,8 +19,8 @@ v_s vs 0 0
 	plot -v_c#branch
 	plot v_s#branch
 
-	meas tran Vmax MAX vout from=0.1 to=40
-	meas tran Vmin MIN vout from=0.1 to=40
+	meas tran Vmax MAX vout from=2.8n to=4n
+	meas tran Vmin MIN vout from=0.4n to=2n
 
 	let v10 = Vmin + 0.1*(Vmax - Vmin)
 	let v50 = Vmin + 0.5*(Vmax - Vmin)
@@ -39,6 +39,8 @@ v_s vs 0 0
         print tplh
         let tp = (tphl+tplh)/2
 	print tp
+	meas tran Icavg AVG v_c#branch from=0.1n to=4n
+	print Icavg
 
 	plot 5*(-v_dd#branch)
 .endc
