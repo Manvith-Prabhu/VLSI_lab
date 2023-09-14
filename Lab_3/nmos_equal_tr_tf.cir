@@ -1,0 +1,48 @@
+* Psuedo NMOS Inverter
+
+.include ./t14y_tsmc_025_level3.txt
+
+* m_instance_name  drain_node  gate_node  source_node  bulk_substrate_node  model_name  L=length  W=width
+m_load vdd vdd vout 0 cmosn l=0.5u w=25u
+m_driver vout in 0 0 cmosn l=0.5u w=10u
+
+v_dd vdd 0 5
+v_test vtest vout 0
+*Vname N1 N2 PULSE(V_initial V_final T_initial_Delay T_rise T_fall PulseWidth_onperiod Period_total)
+v_in in 0 PULSE(0 5 0 126.1p 0.1p 2n 4n)
+
+.control
+	tran 0.01ns 10ns
+	setplot tran1
+	plot vout in
+	plot -5*v_dd#branch
+
+        meas tran Vmax MAX vout from=2.4n to=3.8n
+        meas tran Vmin MIN vout from=0.4n to=1.8n
+        
+	*i(v_dd)=v_dd#branch
+	meas tran Imax MAX i(v_dd) from=0.01n to=4n
+	print Imax
+
+        let v10 = Vmin + 0.1*(Vmax - Vmin)
+        let v50 = Vmin + 0.5*(Vmax - Vmin)
+        let v90 = Vmin + 0.9*(Vmax - Vmin)
+
+        meas tran trise trig vout val=v10 rise=1 targ vout val=v90 rise=1
+        print trise
+        meas tran tfall trig vout val=v90 fall=1 targ vout val=v10 fall=1
+        print tfall
+	print trise - tfall
+
+	meas tran energy INTEG i(v_dd) from=0.01n to=4n
+	print -5*energy
+	meas tran Iavg AVG v_dd#branch from=0.01n to=4n
+        let Pavg=-5*Iavg
+        print Pavg
+
+.endc
+
+
+
+.end
+ 

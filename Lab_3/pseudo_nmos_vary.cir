@@ -1,0 +1,75 @@
+ 
+* Psuedo NMOS Inverter
+
+.include ./t14y_tsmc_025_level3.txt
+* m_instance_name drain_node gate_node source_node bulk_substrate_node model_name L=length W=width
+m_load vdd vdd vout 0 cmosn l=0.5u w=25u
+m_driver vout in 0 0 cmosn l=0.5u w=10u
+
+* v_instance_name posive_node negetive_node value
+v_dd vdd 0 5
+v_test vtest vout 0
+*Vname N1 N2 PULSE(V_initial V_final T_initial_Delay T_rise T_fall PulseWidth_onperiod Period_total)
+v_in in 0 PULSE(0 5 0 0.1p 0.1p 2n 4n)
+
+.control
+        *.DC SRCname1 START STOP STEP SRCname2 START STOP STEP
+	*foreach width 1u 10u 100u
+		*alter @m_driver[w] = $width
+		*dc v_in 0 5 0.01
+		8tran 1p 20n
+	*end 
+	
+	*foreach length 1u 10u 30u
+		*alter @m_driver[l] = $length
+		*dc v_in 0 5 0.01
+		*tran 1p 20n
+	*end 
+	
+	
+	foreach width 1u 10u 100u
+		alter @m_load[w] = $width
+		dc v_in 0 5 0.01
+		tran 1p 20n
+	end 
+	
+	*foreach length 1u 10u 20u
+		*alter @m_load[l] = $length
+		*dc v_in 0 5 0.01
+		8tran 1p 20n
+	*end
+
+	
+	foreach iter 1 2 3  
+	
+		setplot dc$iter
+		plot vout
+		hardcopy images/w_load_$iter vout
+		
+        setplot tran$iter
+	plot vout, in
+	hardcopy images/w_load_current$iter vout, in
+	plot 5*v_test#branch
+	hardcopy images/w_load_power$iter 5*v_test#branch
+	
+	meas tran$iter vmax MAX vout from=2.4n to =3.8n
+	meas tran$iter vmin MIN vout from=0.4n to =1.8n
+
+	let v_10 =vmin+ 0.1*(vmax-vmin)
+	let v_90 =vmin+ 0.9*(vmax-vmin)
+	let v_50 =vmin+ 0.5*(vmax-vmin)
+
+	meas tran$iter trise trig vout val=v_10 rise=1 targ vout val=v_90 rise=1
+	meas tran$iter tfall trig vout val=v_90 fall=2 targ vout val=v_10 fall=2
+
+        meas tran$iter tphl trig in val=2.5 rise=2 targ vout val=v_50 fall=2
+        meas tran$iter tplh trig in val=2.5 fall=2 targ vout val=v_50 rise=2
+        
+        let pd=(tphl+tplh)*0.5
+        print pd
+        meas tran$iter Iavg AVG v_dd#branch from=0.1n to=4n
+        let Pavg=-5*Iavg
+        print Pavg
+        end
+.endc
+.end
