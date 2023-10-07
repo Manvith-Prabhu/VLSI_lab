@@ -1,0 +1,49 @@
+ 
+* CMOS Inverter
+
+.include ./t14y_tsmc_025_level3.txt
+* m_instance_name drain_node gate_node source_node bulk_substrate_node model_name L=length W=width
+
+m_load vout vin vdd v_dd cmosp l=0.5u w=10u
+m_driver vout vin 0 0 cmosn l=0.5u w=10u
+
+v_dd vdd 0 5
+v_test vtest vout 0
+v_in vin 0 PULSE(0 5 0 0 0.1n 0.5n 2n 4n)
+
+
+.control
+	alter @m_load[w]=30u
+	alter @m_driver[w]=5u
+	tran 0.01ns 10ns
+	setplot tran1
+	plot vout vin
+	plot -5*v_dd#branch
+
+        meas tran vmax MAX vout from=2.4n to =3.8n
+	meas tran vmin MIN vout from=0.4n to =1.8n
+
+	let v_10 =vmin+ 0.1*(vmax-vmin)
+	let v_90 =vmin+ 0.9*(vmax-vmin)
+	let v_50 =vmin+ 0.5*(vmax-vmin)
+
+	meas tran trise trig vout val=v_10 rise=1 targ vout val=v_90 rise=1
+	meas tran tfall trig vout val=v_90 fall=2 targ vout val=v_10 fall=2
+
+	meas tran tphl trig vin val=2.5 rise=2 targ vout val=v_50 fall=2
+	meas tran tplh trig vin val=2.5 fall=2 targ vout val=v_50 rise=2
+        
+	let pd=(tphl+tplh)*0.5
+	print pd
+	meas tran energy INTEG i(v_dd) from=0.01n to=4n
+	print -5*energy
+	meas tran Iavg AVG v_dd#branch from=0.01n to=4n
+	let Pavg=-5*Iavg
+	print Pavg
+
+.endc
+
+
+
+.end
+  

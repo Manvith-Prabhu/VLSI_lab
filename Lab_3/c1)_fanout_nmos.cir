@@ -1,0 +1,56 @@
+* Psuedo NMOS Inverter
+
+.include ./t14y_tsmc_025_level3.txt
+
+m_load vdd vdd vout 0 cmosn l=0.5u w=10u
+m_driver vout vin 0 0 cmosn l=0.5u w=10u
+c1 ctop 0 0.3p
+
+v_dd vdd 0 5
+v_in vin 0 PULSE(0 5 0 0 0 1n 2n)
+v_c vout ctop 0
+
+.control
+	foreach wid 15u
+        alter m_driver w = $wid
+        *run
+	tran 0.01ns 10ns
+	setplot tran1
+	plot vout vin
+	plot v_c vin
+	plot -5*v_dd#branch
+
+        meas tran Vmax MAX vout from=0.3n to=4n
+        meas tran Vmin MIN vout from=0.01n to=4n
+
+	meas tran Imax MAX i(v_dd) from=0.01n to=4n
+	print Imax
+
+        let v10 = Vmin + 0.1*(Vmax - Vmin)
+        let v50 = Vmin + 0.5*(Vmax - Vmin)
+        let v90 = Vmin + 0.9*(Vmax - Vmin)
+
+        meas tran trise trig vout val=v10 rise=1 targ vout val=v90 rise=1
+        print trise
+        meas tran tfall trig vout val=v90 fall=1 targ vout val=v10 fall=1
+        print tfall
+	print trise - tfall
+	
+	meas tran tphl trig vin val=2.5 rise=2 targ vout val=v50 fall=2
+	meas tran tplh trig vin val=2.5 fall=2 targ vout val=v50 rise=2
+	let tp = (tphl+tplh)/2
+        print tp
+        
+	meas tran energy INTEG i(v_dd) from=0.01n to=4n
+	print -5*energy
+	meas tran Iavg AVG v_dd#branch from=0.01n to=4n
+        let Pavg=-5*Iavg
+        print Pavg
+	end
+.endc
+
+
+
+.end
+ 
+
