@@ -1,7 +1,7 @@
 * inverter with discrete resistor load; load mosfet width being changed.
 
-m0 out in vss 0 cmosn w=6.4u l=1.8u
-r0 vdd out 10k
+m0 vout in vss 0 cmosn w=6.4u l=1.8u
+r0 vdd vout 10k
 
 .include ./t14y_tsmc_025_level3.txt
 
@@ -15,20 +15,20 @@ Vin in 0 dc 2.5 pulse(0 5 0 0.1n 0.1n 2n 4n)
 
 .control
 	tran 0.01n 20n
-	meas tran vmax MAX out from=0n to=1n
-	meas tran vmin MIN out from=2n to=3n
+	meas tran vmax MAX vout from=0n to=1n
+	meas tran vmin MIN vout from=2n to=3n
 
 	let v_10 vmin+0.1*(vmax-vmin)
 	let v_90 vmin+0.9*(vmax-vmin)
 	let v_50 vmin+0.5*(vmax-vmin)
 
-	meas tran trise trig vout val=v10 rise=1 targ vout val=v90 rise=1
+	meas tran trise trig vout val=v_10 rise=1 targ vout val=v_90 rise=1
 	print trise
-	meas tran tfall trig vout val=v90 fall=1 targ vout val=v10 fall=1
+	meas tran tfall trig vout val=v_90 fall=1 targ vout val=v_10 fall=1
 	print tfall
 
-	meas tran tphl trig vin val=2.5 rise=1 targ vout val=v50 fall=1
-        meas tran tplh trig vin val=2.5 fall=1 targ vout val=v50 rise=1
+	meas tran tphl trig vin val=2.5 rise=1 targ vout val=v_50 fall=1
+        meas tran tplh trig vin val=2.5 fall=1 targ vout val=v_50 rise=1
         print tphl
         print tplh
         let tp = (tphl+tplh)/2
