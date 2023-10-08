@@ -1,4 +1,4 @@
-* Psuedo NMOS Inverter
+* NMOS Inverter
 
 .include ./t14y_tsmc_025_level3.txt
 * m_instance_name drain_node gate_node source_node bulk_substrate_node model_name L=length W=width
