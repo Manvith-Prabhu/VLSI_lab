@@ -3,7 +3,7 @@
 
 .include ./t14y_tsmc_025_level3.txt
 * m_instance_name drain_node gate_node source_node bulk_substrate_node model_name L=length W=width
-m_load vdd vdd vout 0 cmosn l=0.5u w=25u
+m_load vout 0 vdd vdd cmosp l=0.5u w=25u
 m_driver vout in 0 0 cmosn l=0.5u w=10u
 
 * v_instance_name posive_node negetive_node value
