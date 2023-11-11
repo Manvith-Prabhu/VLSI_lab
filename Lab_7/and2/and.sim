@@ -1,0 +1,15 @@
+| units: 5.5 tech: scmos format: MIT
+p a vdd a_17_48# 2 14 15 48
+p b a_17_48# vdd 2 14 25 48
+p a_17_48# vdd vout 2 18 78 43
+n a vss a_21_12# 2 12 19 12
+n b a_21_12# a_17_48# 2 12 26 12
+n a_17_48# vss vout 2 9 78 22
+R a_21_12# 16
+R vout 37
+R a_17_48# 200
+R b 208
+R a 219
+R vss 1366
+R w_0_0# 1370
+R vdd 7225

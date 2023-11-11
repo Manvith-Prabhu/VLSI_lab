@@ -1,0 +1,16 @@
+* SPICE3 file created from or2.ext - technology: scmos
+
+.option scale=0.055u
+
+M1000 a_18_43# a vdd vdd pmos w=28 l=2
++  ad=140 pd=66 as=435 ps=134
+M1001 a_16_20# b a_18_43# vdd pmos w=28 l=2
++  ad=166 pd=70 as=0 ps=0
+M1002 vout a_16_20# vdd vdd pmos w=18 l=2
++  ad=116 pd=50 as=0 ps=0
+M1003 a_16_20# a gnd vss nmos w=8 l=2
++  ad=81 pd=40 as=273 ps=120
+M1004 gnd b a_16_20# vss nmos w=8 l=2
++  ad=0 pd=0 as=0 ps=0
+M1005 vout a_16_20# gnd vss nmos w=9 l=2
++  ad=57 pd=32 as=0 ps=0

@@ -1,0 +1,16 @@
+* SPICE3 file created from and.ext - technology: scmos
+
+.option scale=0.055u
+
+M1000 a_17_48# a vdd vdd pmos w=14 l=2
++  ad=112 pd=44 as=419 ps=152
+M1001 vdd b a_17_48# vdd pmos w=14 l=2
++  ad=0 pd=0 as=0 ps=0
+M1002 vout a_17_48# vdd vdd pmos w=18 l=2
++  ad=116 pd=50 as=0 ps=0
+M1003 a_21_12# a vss vss nmos w=12 l=2
++  ad=60 pd=34 as=243 ps=88
+M1004 a_17_48# b a_21_12# vss nmos w=12 l=2
++  ad=72 pd=38 as=0 ps=0
+M1005 vout a_17_48# vss vss nmos w=9 l=2
++  ad=57 pd=32 as=0 ps=0

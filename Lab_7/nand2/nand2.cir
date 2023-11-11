@@ -1,0 +1,32 @@
+* SPICE3 file created from nand2.ext - technology: scmos
+.include ./t14y_tsmc_025_level3.txt
+.option scale=1u
+
+M1000 Vout A Vdd Vdd cmosp w=6 l=2
++  ad=42 pd=26 as=64 ps=48
+M1001 Vdd B Vout Vdd cmosp w=6 l=2
++  ad=0 pd=0 as=0 ps=0
+M1002 a_7_n4# A Gnd Gnd cmosn w=3 l=2
++  ad=21 pd=20 as=22 ps=20
+M1003 Vout B a_7_n4# Gnd cmosn w=3 l=2
++  ad=25 pd=22 as=0 ps=0
+C0 Gnd Gnd 2.96fF
+C1 Vout Gnd 4.14fF
+C2 B Gnd 7.58fF
+C3 A Gnd 6.59fF
+C4 Vdd Gnd 4.00fF
+
+vdd Vdd 0 5
+gnd Gnd 0 0
+va A 0 PULSE(0 5 0 0 0 4n 8n)
+vb B 0 PULSE(0 5 0 0 0 2n 4n)
+
+.control
+tran 0.01p 10n
+setplot tran
+plot A B Vout
+
+.endc
+
+.end
+ 
