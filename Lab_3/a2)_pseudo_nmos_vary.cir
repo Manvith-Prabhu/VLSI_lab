@@ -36,7 +36,7 @@ v_in in 0 PULSE(0 5 0 0.1p 0.1p 2n 4n)
 	*foreach length 1u 10u 20u
 		*alter @m_load[l] = $length
 		*dc v_in 0 5 0.01
-		8tran 1p 20n
+		*tran 1p 20n
 	*end
 
 	
