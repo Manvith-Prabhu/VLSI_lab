@@ -2,7 +2,7 @@
 
 .include ./t14y_tsmc_025_level3.txt
 
-m_load vout vin vdd v_dd cmosp l=0.5u w=10u
+m_load vout vin vdd vdd cmosp l=0.5u w=10u
 m_driver vout vin 0 0 cmosn l=0.5u w=10u
 c1 ctop 0 6p
 
